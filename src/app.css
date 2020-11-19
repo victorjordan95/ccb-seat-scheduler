@@ -1,0 +1,61 @@
+body {
+  font-family: sans-serif;
+}
+
+.seat-picker__row__number {
+  color: transparent!important;
+  position: absolute;
+  z-index: -3;
+}
+
+h1 {
+  font-size: 1.6rem;
+}
+
+h2 {
+  font-size: 12px;
+}
+
+.seats-available {
+  font-size: 0.9rem!important;
+}
+
+.seats-available {
+  word-break: break-word!important;
+}
+
+.seat-picker__row > *:not(:last-child) {
+  margin-right: 0!important;
+}
+
+@media screen and (min-width: 768px) {
+  .seat-picker__row > *:not(:last-child) {
+    margin-right: 20px!important;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+}
+
+@media print {
+  .print-list {
+    display: block!important;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100vh;
+    width: 100vw;
+    z-index: 9999;
+    background-color: #ffffff;
+  }
+  .print-list h2 {
+    font-size: 36px;
+    margin-bottom: 8px
+  }
+}
+
