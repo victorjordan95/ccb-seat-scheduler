@@ -628,7 +628,8 @@ export const central = [
       id: 2,
       number: 2,
       orientation: 'west',
-      tooltip: 'Cadeira de rodas'
+      tooltip: 'Cadeira de rodas',
+      isReserved: true
     },
     {
       id: 3,
@@ -658,7 +659,8 @@ export const central = [
       id: 7,
       number: 7,
       orientation: 'east',
-      tooltip: 'Cadeira de rodas'
+      tooltip: 'Cadeira de rodas',
+      isReserved: true
     },
     {
       id: 8,
@@ -738,6 +740,7 @@ export const central = [
       id: 21,
       number: 21,
       orientation: 'east',
+      isReserved: true
 
     },
     {
@@ -1002,7 +1005,6 @@ export const central = [
       id: 46,
       number: 46,
       orientation: 'west',
-      tooltip: 'Músico'
     },
     {
       id: 47,
@@ -1256,6 +1258,52 @@ export const central = [
     {
       id: 68,
       number: 68,
+      orientation: 'west',
+    },
+    {
+      id: null,
+      number: null,
+      orientation: 'east',
+      isReserved: true
+    },
+    {
+      id: null,
+      number: null,
+      orientation: 'west',
+      isReserved: true
+    },
+  ],
+  [{
+      id: null,
+      number: null,
+      orientation: 'east',
+      isReserved: true
+    },
+    {
+      id: null,
+      number: null,
+      orientation: 'west',
+      isReserved: true
+    },
+    {
+      id: 81,
+      number: 82,
+      orientation: 'east',
+    },
+    {
+      id: 83,
+      number: 83,
+      orientation: 'west',
+    },
+    {
+      id: 84,
+      number: 84,
+      orientation: 'east',
+      isReserved: true
+    },
+    {
+      id: 85,
+      number: 85,
       orientation: 'west',
     },
     {

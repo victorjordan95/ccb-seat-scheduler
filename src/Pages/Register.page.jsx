@@ -53,41 +53,6 @@ function RegisterPage(props) {
     I: 8,
   };
 
-  const seatsAvailables = [
-    1,
-    2,
-    9,
-    10,
-    11,
-    12,
-    19,
-    20,
-    21,
-    22,
-    29,
-    30,
-    31,
-    32,
-    39,
-    40,
-    41,
-    42,
-    49,
-    50,
-    51,
-    52,
-    59,
-    60,
-    61,
-    62,
-    69,
-    70,
-    71,
-    72,
-    79,
-    80,
-  ];
-
   const fetchSeats = async (display, church) => {
     setLoading(true);
     if (display?.lateral) {
@@ -155,7 +120,7 @@ function RegisterPage(props) {
       setPorteiro(window.location.pathname === '/porteiro');
     });
     FirebaseService.getDataList(`map/${props.match.params.igreja}/available-seats`, seats => {
-      if (seats > 0) {
+      if (seats.length > 0) {
         const availableSeatsSchedule = seats[0];
         delete availableSeatsSchedule.key;
         setAvailableSeats(availableSeatsSchedule)
@@ -188,22 +153,13 @@ function RegisterPage(props) {
       setClickedSeat({});
       return;
     }
-    if (selectedChurch !== 'vila-maria') {
-      if (seatsAvailables.filter(elId => Number(id) === elId).length) {
-        setClickedSeat({
-          row,
-          number,
-          id,
-        });
-        setShow(true);
-      } else {
-        setClickedSeat({
-          row,
-          number,
-          id,
-        });
-        setShow(true);
-      }
+    if (!availableSeats.filter(elId => Number(id) === elId).length) {
+      setClickedSeat({
+        row,
+        number,
+        id,
+      });
+      setShow(true);
     } else {
       setShow(true);
       setClickedSeat(null);

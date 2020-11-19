@@ -176,9 +176,7 @@ function AdminPage(props) {
   }
 
   const seatsAvailableSchedule = () => {
-    FirebaseService.pushData(`map/${selectedChurch}/available-seats`, [
-      1, 2, 9, 10, 11, 12, 19, 20, 21, 22, 29, 30, 31, 32, 39, 40, 41, 42, 49, 50, 51, 52, 59, 60, 61, 62, 69, 70, 71, 72, 79, 80
-    ]);
+    FirebaseService.pushData(`map/${selectedChurch}/available-seats`, [3, 5, 6, 27, 29, 30, 31, 35, 36, 38]);
   }
 
   return (
