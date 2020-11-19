@@ -155,10 +155,11 @@ function RegisterPage(props) {
       setPorteiro(window.location.pathname === '/porteiro');
     });
     FirebaseService.getDataList(`map/${props.match.params.igreja}/available-seats`, seats => {
-      const availableSeatsSchedule = seats[0];
-      delete availableSeatsSchedule.key;
-      setAvailableSeats(availableSeatsSchedule)
-      console.log(availableSeatsSchedule);
+      if (seats > 0) {
+        const availableSeatsSchedule = seats[0];
+        delete availableSeatsSchedule.key;
+        setAvailableSeats(availableSeatsSchedule)
+      }
     });
   }, []);
 
@@ -238,44 +239,6 @@ function RegisterPage(props) {
     removeCb(row, number);
   };
 
-  const addData = () => {
-    if (!firebaseKey) {
-
-      const arcWithoutKey = arcCentral;
-      delete arcWithoutKey.key
-
-      FirebaseService.updateData(
-        `map/${selectedChurch}/central/${firebaseKey}`,
-        arcWithoutKey
-      );
-    } else {
-      FirebaseService.pushData(`map/${selectedChurch}/central`, central);
-    }
-
-    if (!firebaseKeyLateralIrmao) {
-      const arcWithoutKey = arcLateralIrmaos;
-      delete arcWithoutKey.key
-
-      FirebaseService.updateData(
-        `map/${selectedChurch}/lateral/irmaos/${firebaseKeyLateralIrmao}`,
-        arcWithoutKey
-      );
-    } else {
-      FirebaseService.pushData(`map/${selectedChurch}/archetype/lateral/irmaos`, lateralIrmaos);
-    }
-
-    if (!firebaseKeyLateralIrma) {
-      const arcWithoutKey = arcLateralIrmaos;
-      delete arcWithoutKey.key
-      FirebaseService.updateData(
-        `map/${selectedChurch}/lateral/irmas/${firebaseKeyLateralIrma}`,
-        arcWithoutKey
-      );
-    } else {
-      FirebaseService.pushData(`map/${selectedChurch}/archetype/lateral/irmas`, lateralIrmas);
-    }
-  };
-
   const printList = () => {
     setLoading(true);
     const reserved = [];
@@ -298,7 +261,7 @@ function RegisterPage(props) {
       <div className="row">
         <div className="col-12">
           <div className="d-flex justify-content-between align-items-center">
-            <h1 className="text-center text-capitalize">{selectedChurch?.replace('-', ' ')}</h1>
+            <h1 className="text-center text-capitalize">{selectedChurch?.replaceAll('-', ' ')}</h1>
             {isPorteiro && <button className="btn btn-primary" onClick={printList}>Imprimir lista</button>}
           </div>
           {
@@ -393,10 +356,6 @@ function RegisterPage(props) {
             )}
         </div>
       </div>
-
-      <button className="" onClick={addData}>
-        Add
-      </button>
 
       <Modal show={show} onHide={handleClose}>
         {clickedSeat ? (
