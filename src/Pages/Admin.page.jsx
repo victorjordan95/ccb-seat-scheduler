@@ -65,23 +65,23 @@ function AdminPage(props) {
       await FirebaseService.getDataList(
         `map/${church}/lateral/irmaos`,
         dataReceived => {
-          setDataLateralMen(dataReceived[0]);
-          setFirebaseKeyLateralIrmao(dataReceived[0].key);
+          setDataLateralMen(dataReceived?.[0]);
+          setFirebaseKeyLateralIrmao(dataReceived?.[0]?.key);
         }
       );
 
       await FirebaseService.getDataList(
         `map/${church}/archetype/lateral/irmas`,
         dataReceived => {
-          setArcLateralIrmaos(dataReceived[0]);
+          setArcLateralIrmaos(dataReceived?.[0]);
         }
       );
 
       await FirebaseService.getDataList(
         `map/${church}/lateral/irmas`,
         dataReceived => {
-          setDataLateralWomen(dataReceived[0]);
-          setFirebaseKeyLateralIrma(dataReceived[0].key);
+          setDataLateralWomen(dataReceived?.[0]);
+          setFirebaseKeyLateralIrma(dataReceived?.[0]?.key);
         }
       );
     }

@@ -33,6 +33,7 @@ function RegisterPage(props) {
   const [selectedChurch, setSelectedChurch] = useState('vila-maria');
 
   const [clickedSeat, setClickedSeat] = useState();
+  const [clickedLocale, setClickedLocale] = useState();
   const [availableSeats, setAvailableSeats] = useState();
 
   const [firebaseKey, setFirebaseKey] = useState();
@@ -117,7 +118,7 @@ function RegisterPage(props) {
     FirebaseService.getDataList(`map/${props.match.params.igreja}/display`, dataReceived => {
       setDisplay(dataReceived[0]);
       fetchSeats(dataReceived[0], props.match.params.igreja);
-      setPorteiro(window.location.pathname === '/porteiro');
+      setPorteiro(window.location.pathname.includes('/porteiro'));
     });
     FirebaseService.getDataList(`map/${props.match.params.igreja}/available-seats`, seats => {
       if (seats.length > 0) {
@@ -128,13 +129,27 @@ function RegisterPage(props) {
     });
   }, []);
 
-  const addSeatCallback = async ({ row, number, id }, addCb) => {
+  const addSeatCallback = async ({ row, number, id }, addCb, locale) => {
+    let firebaseKeyToSave;
+    let indexToUpdate;
+    switch (locale) {
+      case 'lateral/irmaos':
+        firebaseKeyToSave = firebaseKeyLateralIrmao;
+        indexToUpdate = dataLateralMen[rowsToNumber[row]].findIndex(el => el.id === id);
+        break;
+      case 'lateral/irmas':
+        firebaseKeyToSave = firebaseKeyLateralIrma;
+        indexToUpdate = dataLateralWomen[rowsToNumber[row]].findIndex(el => el.id === id);
+        break;
+      default:
+        firebaseKeyToSave = firebaseKey;
+        indexToUpdate = data[rowsToNumber[row]].findIndex(el => el.id === id);
+        break;
+    }
+
     if (isPorteiro) {
       const rowToNumber = rowsToNumber[row];
-      let seatConverted =
-        Number(id) < 10 ? Number(id) - 1 : (Number(id) % 10) - 1;
       const orientation = Number(id) % 2 === 0 ? 'west' : 'east';
-      seatConverted = seatConverted === -1 ? 9 : seatConverted;
 
       const dataToAdd = {
         row,
@@ -142,23 +157,25 @@ function RegisterPage(props) {
         id,
         orientation,
         isReserved: true,
-        tooltip: '',
       };
 
       await FirebaseService.updateData(
-        `map/${selectedChurch}/central/${firebaseKey}/${rowToNumber}/${seatConverted}`,
+        `map/${selectedChurch}/${locale}/${firebaseKeyToSave}/${rowToNumber}/${indexToUpdate}`,
         dataToAdd
       );
-      fetchSeats();
+      fetchSeats(displayChurch, selectedChurch);
       setClickedSeat({});
       return;
     }
+
     if (!availableSeats.filter(elId => Number(id) === elId).length) {
       setClickedSeat({
         row,
         number,
         id,
       });
+
+      setClickedLocale({ firebaseKeyToSave, locale, indexToUpdate })
       setShow(true);
     } else {
       setShow(true);
@@ -168,12 +185,7 @@ function RegisterPage(props) {
 
   const saveSeat = async () => {
     const rowToNumber = rowsToNumber[clickedSeat.row];
-    let seatConverted =
-      Number(clickedSeat.id) < 10
-        ? Number(clickedSeat.id) - 1
-        : (Number(clickedSeat.id) % 10) - 1;
     const orientation = Number(clickedSeat.id) % 2 === 0 ? 'west' : 'east';
-    seatConverted = seatConverted === -1 ? 9 : seatConverted;
 
     const dataToAdd = {
       ...clickedSeat,
@@ -183,7 +195,7 @@ function RegisterPage(props) {
     };
 
     await FirebaseService.updateData(
-      `map/${selectedChurch}/central/${firebaseKey}/${rowToNumber}/${seatConverted}`,
+      `map/${selectedChurch}/${clickedLocale.locale}/${clickedLocale.firebaseKeyToSave}/${rowToNumber}/${clickedLocale.indexToUpdate}`,
       dataToAdd
     );
     fetchSeats(displayChurch, selectedChurch);
@@ -222,9 +234,8 @@ function RegisterPage(props) {
           </div>
           {
             availableSeats && <p className="seats-available">
-              Assentos disponíveis para agendamento prévios:
+              Assentos bloqueados para agendamento:
             <br />
-              <b>SOMENTE: </b>
               {availableSeats.map(seat => ` - ${seat}`)}
             </p>
           }
@@ -242,7 +253,7 @@ function RegisterPage(props) {
                 >
                   {dataLateralMen && (
                     <SeatPicker
-                      addSeatCallback={addSeatCallback}
+                      addSeatCallback={(seat, cb) => addSeatCallback(seat, cb, 'lateral/irmaos')}
                       removeSeatCallback={removeSeatCallback}
                       rows={dataLateralMen}
                       maxReservableSeats={1}
@@ -257,7 +268,7 @@ function RegisterPage(props) {
 
                   {dataLateralWomen && (
                     <SeatPicker
-                      addSeatCallback={addSeatCallback}
+                      addSeatCallback={(seat, cb) => addSeatCallback(seat, cb, 'lateral/irmas')}
                       removeSeatCallback={removeSeatCallback}
                       rows={dataLateralWomen}
                       maxReservableSeats={1}
@@ -279,7 +290,7 @@ function RegisterPage(props) {
                   {data && (
                     <>
                       <SeatPicker
-                        addSeatCallback={addSeatCallback}
+                        addSeatCallback={(seat, cb) => addSeatCallback(seat, cb, 'central')}
                         removeSeatCallback={removeSeatCallback}
                         rows={data}
                         maxReservableSeats={1}
