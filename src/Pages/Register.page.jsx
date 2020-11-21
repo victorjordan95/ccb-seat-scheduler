@@ -52,6 +52,22 @@ function RegisterPage(props) {
     G: 6,
     H: 7,
     I: 8,
+    J: 9,
+    K: 10,
+    L: 11,
+    M: 12,
+    N: 13,
+    O: 14,
+    P: 15,
+    Q: 16,
+    R: 17,
+    S: 18,
+    T: 19,
+    U: 20,
+    V: 21,
+    X: 22,
+    Y: 23,
+    Z: 24
   };
 
   const fetchSeats = async (display, church) => {
@@ -60,7 +76,7 @@ function RegisterPage(props) {
       await FirebaseService.getDataList(
         `map/${church}/archetype/lateral/irmaos`,
         dataReceived => {
-          setArcLateralIrmaos(dataReceived[0]);
+          setArcLateralIrmaos(dataReceived?.[0]);
         }
       );
 
@@ -212,11 +228,26 @@ function RegisterPage(props) {
     const reserved = [];
     data.map(col => {
       col.filter(seat => {
-        if (seat.isReserved) {
+        if (seat.isReserved && seat.nome) {
           reserved.push(seat);
         }
       })
     })
+    dataLateralMen.map(col => {
+      col.filter(seat => {
+        if (seat.isReserved && seat.nome) {
+          reserved.push(seat);
+        }
+      })
+    })
+    dataLateralWomen.map(col => {
+      col.filter(seat => {
+        if (seat.isReserved && seat.nome) {
+          reserved.push(seat);
+        }
+      })
+    })
+    console.log(reserved)
     setList(reserved);
     setTimeout(() => {
       setLoading(false);
