@@ -27,18 +27,16 @@ function AdminPage(props) {
   const [arcCentral, setArcCentral] = useState();
 
   const [displayChurch, setDisplay] = useState();
-  const [show, setShow] = useState(false);
   const [isPorteiro, setPorteiro] = useState(false);
-  const [reservedList, setList] = useState([]);
   const [selectedChurch, setSelectedChurch] = useState('vila-maria');
 
-  const [clickedSeat, setClickedSeat] = useState();
+
+  const [blockedSeats, setBlockedSeats] = useState();
+  const [keyBlockedSeats, setKeyBlockedSeats] = useState();
 
   const [firebaseKey, setFirebaseKey] = useState();
   const [firebaseKeyLateralIrma, setFirebaseKeyLateralIrma] = useState();
   const [firebaseKeyLateralIrmao, setFirebaseKeyLateralIrmao] = useState();
-
-  const handleClose = () => setShow(false);
 
   const rowsToNumber = {
     A: 0,
@@ -118,6 +116,10 @@ function AdminPage(props) {
       fetchSeats(dataReceived[0], props.match.params.igreja);
       setPorteiro(window.location.pathname === '/porteiro');
     });
+    FirebaseService.getDataList(`map/${props.match.params.igreja}/available-seats`, dataReceived => {
+      setBlockedSeats(dataReceived?.[0]);
+      setKeyBlockedSeats(dataReceived?.[0]?.key)
+    });
   }, []);
 
   const addSeatCallback = async ({ row, number, id }, addCb) => {
@@ -176,7 +178,13 @@ function AdminPage(props) {
   }
 
   const seatsAvailableSchedule = () => {
-    FirebaseService.pushData(`map/${selectedChurch}/available-seats`, [3, 5, 6, 27, 29, 30, 31, 35, 36, 38]);
+    delete blockedSeats?.key;
+    if (keyBlockedSeats) {
+      FirebaseService.pushData(`map/${selectedChurch}/available-seats`, blockedSeats.split(','));
+      FirebaseService.remove(`map/${selectedChurch}/available-seats`, keyBlockedSeats);
+      return;
+    }
+    FirebaseService.pushData(`map/${selectedChurch}/available-seats`, blockedSeats.split(','));
   }
 
   return (
@@ -271,18 +279,27 @@ function AdminPage(props) {
         </div>
       </div>
 
-      <button className="btn btn-primary ml-2" onClick={addData}>
-        Reset
+      <div className="row">
+        <button className="btn btn-primary ml-2" onClick={addData}>
+          Reset
       </button>
 
-      <button className="btn btn-primary ml-2" onClick={createArchetype}>
-        Create archetype
+        <button className="btn btn-primary ml-2" onClick={createArchetype}>
+          Create archetype
       </button>
 
-      <button className="btn btn-primary ml-2" onClick={seatsAvailableSchedule}>
+
+      </div>
+
+      <div className="row mt-4">
+        <div className="">
+          <label>Lugares para bloquear <small> (digite os numeros separado por vírgula)</small></label>
+          <input type="text" className="form-control" value={blockedSeats} onChange={(e) => setBlockedSeats(e.target.value)} />
+        </div>
+      </div>
+      <button className="btn btn-primary mb-2 mt-2" onClick={seatsAvailableSchedule}>
         Add seats to schedule
       </button>
-
     </div>
   );
 }

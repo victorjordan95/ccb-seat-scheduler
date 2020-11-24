@@ -31,4 +31,6 @@ export default class FirebaseService {
       ...obj
     });
   };
+
+  static remove = (node, id) => firebaseDatabase.ref(`${node}/${id}`).remove();
 }

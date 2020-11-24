@@ -1246,7 +1246,6 @@ export const central = [
       number: 62,
       orientation: 'west',
       locale: 'central',
-      tooltip: 'Músico'
     },
     {
       id: 63,
@@ -1373,26 +1372,26 @@ export const central = [
     },
     {
       id: 81,
-      number: 82,
+      number: 81,
       orientation: 'east',
+      locale: 'central',
+    },
+    {
+      id: 82,
+      number: 82,
+      orientation: 'west',
       locale: 'central',
     },
     {
       id: 83,
       number: 83,
-      orientation: 'west',
-      locale: 'central',
-    },
-    {
-      id: 84,
-      number: 84,
       orientation: 'east',
       locale: 'central',
       isReserved: true
     },
     {
-      id: 85,
-      number: 85,
+      id: 84,
+      number: 84,
       orientation: 'west',
       locale: 'central',
     },
