@@ -184,7 +184,7 @@ function RegisterPage(props) {
       return;
     }
 
-    if (!availableSeats.filter(elId => Number(id) === elId).length) {
+    if (!availableSeats.filter(elId => Number(id) === Number(elId)).length) {
       setClickedSeat({
         row,
         number,
